@@ -1,7 +1,9 @@
 package main
 
-import "github.com/leychan/cell/downloader"
+import (
+	"github.com/leychan/cell/craw"
+)
 
 func main() {
-	downloader.CrawIndex()
+	craw.CrawStart()
 }

@@ -2,38 +2,48 @@ package downloader
 
 import (
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
-	"strconv"
-	"sync"
 )
 
-var List = []string{}
+var path = "/home/lei/tmp/sogou_cell/"
 
-var path = "/home/chenlei/tmp/sogou_cell/"
-
-func Download() {
-	wg := sync.WaitGroup{}
-	list_len := len(List)
-	wg.Add(list_len)
-	for i, l := range List {
-		go func(l string, i int) {
-			res, _ := http.Get(l)
-			defer res.Body.Close()
-			data, _ := ioutil.ReadAll(res.Body)
-			dirExits()
-			err := ioutil.WriteFile(path + strconv.Itoa(i)+".scel", data, 0777)
-			if err != nil {
-				panic(err)
-			}
-			wg.Done()
-		}(l, i)
+//根据传入的url,返回网页主体内容
+func GetBody(url string) []byte {
+	res, err := http.Get(url)
+	if err != nil {
+		panic(err)
 	}
-	wg.Wait()
+	defer res.Body.Close()
+	data, _ := ioutil.ReadAll(res.Body)
+	return data
 }
 
-func dirExits() {
+func Save(data []byte, name string) {
+	dirExits()
+
+	err := ioutil.WriteFile(path+name+".scel", data, 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func dirExits() bool {
 	if _, err := os.Stat(path); err != nil {
 		_ = os.Mkdir(path, 0777)
+		return false
 	}
+	return true
+}
+
+func FileExists() map[string]int {
+	var fileExist = map[string]int{}
+	if dirExits() {
+		d, _ := ioutil.ReadDir(path)
+		for _, f := range d {
+			fileExist[f.Name()] = 1
+		}
+	}
+	return fileExist
 }
