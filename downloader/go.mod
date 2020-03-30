@@ -1,5 +1,3 @@
 module github.com/leychan/cell/downloader
 
 go 1.14
-
-require github.com/PuerkitoBio/goquery v1.5.1
