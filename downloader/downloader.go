@@ -21,7 +21,7 @@ func GetBody(url string) []byte {
 }
 
 func Save(data []byte, name string) {
-	dirExitsOrCreate()
+	dirExistsOrCreate()
 
 	err := ioutil.WriteFile(path+name+".scel", data, 0777)
 	if err != nil {
@@ -29,7 +29,7 @@ func Save(data []byte, name string) {
 	}
 }
 
-func dirExitsOrCreate() bool {
+func dirExistsOrCreate() bool {
 	if _, err := os.Stat(path); err != nil {
 		_ = os.Mkdir(path, 0777)
 		return false
@@ -39,7 +39,7 @@ func dirExitsOrCreate() bool {
 
 func FileExists() map[string]int {
 	var fileExist = map[string]int{}
-	if dirExitsOrCreate() {
+	if dirExistsOrCreate() {
 		d, _ := ioutil.ReadDir(path)
 		for _, f := range d {
 			fileExist[f.Name()] = 1
